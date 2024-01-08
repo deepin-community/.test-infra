@@ -481,11 +481,12 @@ func (session *Session) UpdateSubmodule() error {
 		repo.Config("user.name", session.BotUser.Login)
 		repo.Config("user.email", session.BotUser.Email)
 		repo.Commit("chore: update submodules", fmt.Sprintf("Update submodules to version %s.", session.UpdateToVersion))
-		defer session.CreateStatus(github.Status{
+		defer func() {
+			session.CreateStatus(github.Status{
 			State:       github.StatusSuccess,
 			Context:     "auto-update / update-submodules",
 			Description: fmt.Sprintf("Successful in %s.", time.Since(session.stage.StartedAt()).Round(time.Second)),
-		})
+		})} ()
 		return repo.PushToCentral(session.UpdateBaseBranch, true)
 	}()
 	session.stage.Release()
