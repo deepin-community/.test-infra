@@ -145,7 +145,7 @@ func (s *Session) CheckSubmoduleTagConflict(submodule *SubmoduleInfo) error {
 		return &GitClientError{owner: s.OwnerLogin, repo: submodule.BaseInfo.Name, msg: "cannot create repo client", err: err}
 	}
 	defer repo.Clean()
-	repo.Checkout(s.UpdateBaseBranch)
+	repo.Checkout(submodule.BaseInfo.Branch)
 
 	// Firstly check if the tag exist
 	listTag := exec.Command("git", "tag", "-l", s.UpdateToVersion)
@@ -596,7 +596,7 @@ func (session *Session) deliverUpdatePR(submodule *SubmoduleInfo) error {
 				"chore: update changelog",
 				fmt.Sprintf("Release %s.", session.UpdateToVersion),
 				session.UpdateHeadBranch,
-				session.UpdateBaseBranch,
+				submodule.BaseInfo.Branch,
 				true,
 			)
 			if err != nil {
