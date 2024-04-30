@@ -24,13 +24,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"net/http"
 	"sort"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 
 	"github.com/prometheus/client_golang/prometheus"
 	githubql "github.com/shurcooL/githubv4"
@@ -2122,7 +2123,8 @@ func checkRunToContext(checkRun CheckRun) Context {
 		return context
 	}
 
-	if checkRun.Conclusion == checkRunConclusionNeutral || checkRun.Conclusion == githubql.String(githubql.StatusStateSuccess) {
+	if checkRun.Conclusion == checkRunConclusionNeutral || checkRun.Conclusion == githubql.String(githubql.CheckConclusionStateSkipped) ||
+		checkRun.Conclusion == githubql.String(githubql.StatusStateSuccess) {
 		context.State = githubql.StatusStateSuccess
 		return context
 	}
