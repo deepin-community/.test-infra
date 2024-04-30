@@ -30,6 +30,7 @@ import (
 	_ "k8s.io/test-infra/prow/plugins/cherrypickunapproved"
 	_ "k8s.io/test-infra/prow/plugins/cla"
 	_ "k8s.io/test-infra/prow/plugins/dco"
+	_ "k8s.io/test-infra/prow/plugins/deepin-help"
 	_ "k8s.io/test-infra/prow/plugins/dog"
 	_ "k8s.io/test-infra/prow/plugins/golint"
 	_ "k8s.io/test-infra/prow/plugins/goose"
