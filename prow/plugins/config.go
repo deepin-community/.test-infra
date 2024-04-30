@@ -97,6 +97,7 @@ type Configuration struct {
 	UpdateBot            UpdateBot                    `json:"updatebot,omitempty"`
 	Topic                []Topic                      `json:"topic,omitempty"`
 	CheckBinaries        []CheckBinaries              `json:"check_binaries,omitempty"`
+	DeepinHelp           DeepinHelp                   `json:"deepin_help,omitempty"`
 }
 
 type Help struct {
@@ -110,6 +111,11 @@ type Help struct {
 	//
 	// HelpGuidelinesSummary is the summary of the guide lines for a help-wanted issue.
 	HelpGuidelinesSummary string `json:"help_guidelines_summary,omitempty"`
+}
+
+type DeepinHelp struct {
+	// HelpCommandSummary is the summary of the commands for deepin pr.
+	HelpCommandsSummary string `json:"help_commands_summary,omitempty"`
 }
 
 func (h *Help) setDefaults() {
