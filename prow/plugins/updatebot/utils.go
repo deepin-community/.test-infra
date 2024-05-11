@@ -300,33 +300,35 @@ func PRApproved(client plugins.PluginGitHubClient, pullRequest *github.PullReque
 	}
 	reviews := <-reviewsChan
 
-	if protection != nil && protection.RequiredPullRequestReviews.RequireCodeOwnerReviews {
-		ownerApproved := false
-		for _, review := range reviews {
-			if review.User.Login == owner && review.State == github.ReviewStateApproved {
-				ownerApproved = true
+	if protection != nil && protection.RequiredPullRequestReviews != nil {
+		if protection.RequiredPullRequestReviews.RequireCodeOwnerReviews {
+			ownerApproved := false
+			for _, review := range reviews {
+				if review.User.Login == owner && review.State == github.ReviewStateApproved {
+					ownerApproved = true
+				}
 			}
-		}
-		if !ownerApproved {
-			return false
-		}
-	}
-	if protection != nil && protection.RequiredPullRequestReviews.RequiredApprovingReviewCount > 0 {
-		approvedReviews := 0
-		for _, review := range reviews {
-			isCollaborator, err := client.IsCollaborator(owner, repo, review.User.Login)
-			if err != nil {
-				entry.Warn("Cannot judge if ", review.User.Login, " is collaborator of ", owner, "/", repo)
+			if !ownerApproved {
 				return false
 			}
-			if isCollaborator && review.State == github.ReviewStateApproved {
-				approvedReviews++
-			}
 		}
-		if approvedReviews < protection.RequiredPullRequestReviews.RequiredApprovingReviewCount {
-			return false
-		} else {
-			return true
+		if protection.RequiredPullRequestReviews.RequiredApprovingReviewCount > 0 {
+			approvedReviews := 0
+			for _, review := range reviews {
+				isCollaborator, err := client.IsCollaborator(owner, repo, review.User.Login)
+				if err != nil {
+					entry.Warn("Cannot judge if ", review.User.Login, " is collaborator of ", owner, "/", repo)
+					return false
+				}
+				if isCollaborator && review.State == github.ReviewStateApproved {
+					approvedReviews++
+				}
+			}
+			if approvedReviews < protection.RequiredPullRequestReviews.RequiredApprovingReviewCount {
+				return false
+			} else {
+				return true
+			}
 		}
 	}
 	return true
